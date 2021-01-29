@@ -1,0 +1,6 @@
+# Flutter lint config file
+include: package:pedantic/analysis_options.yaml
+
+# Disable specific rules
+# linter:
+#   rules:

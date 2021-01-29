@@ -50,11 +50,11 @@ This project will run static code analyser on every commit and full test suite o
 
 ### Static code analyser
 
-TBD (dart lint + overcommit)
+This template is using [dartanalyzer](https://dart.dev/tools/dartanalyzer) with [pedantic package](https://pub.dev/packages/pedantic) for static code analysis. All offenses are automatically tracked and prevented on every commit. This feature is handled by [Overcommit](https://github.com/brigade/overcommit) git hook manager.
 
 ### Testing
 
-TBD
+We are using [flutter_test library](https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html).
 
 ### Continuous Integration
 
