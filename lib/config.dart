@@ -2,7 +2,7 @@ enum Flavor {
   DEVELOPMENT,
   PRODUCTION,
 
-	// Flavor specific configuration
+  // Flavor specific configuration
 }
 
 class Config {
