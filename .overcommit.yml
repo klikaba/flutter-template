@@ -3,7 +3,7 @@ CommitMsg:
     enabled: true
 
 PreCommit:
-  DartAnalzer:
+  DartAnalyzer:
     enabled: true
     description: 'Analyze with DartAnalzer'
     required_executable: 'dartanalyzer'
