@@ -7,7 +7,9 @@ PreCommit:
     enabled: true
     description: 'Analyze with DartAnalzer'
     required_executable: 'dartanalyzer'
-    flags: []
+    # TODO remove once DartAnalyzer is merged and released
+    # https://github.com/sds/overcommit/pull/739
+    flags: ['.']
     include: '**/*.dart'
 
 PrePush:

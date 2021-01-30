@@ -20,7 +20,17 @@ This script will:
 
 To get basic idea about configuration approach read [12factor](https://12factor.net/).
 
-TBD
+Configuration is achieved using *"flavors"* and is stored in [lib/config.dart](lib/config.dart). By default, application is started in `production` flavor. To run in `development`, start with `flutter run -t lib/main-dev.dart`. Platform flavors can be used too (`flutter run --flavor dev -t lib/main-dev.dart`). This project defines `dev` and `prod` platform flavors.
+
+Running development:
+```
+flutter run --flavor dev -t lib/main-dev.dart
+```
+
+Running production:
+```
+flutter run --flavor prod
+```
 
 ## Getting started
 
