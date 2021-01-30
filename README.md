@@ -59,6 +59,7 @@ We are using [flutter_test library](https://api.flutter.dev/flutter/flutter_test
 ### Continuous Integration
 
 [AppCenter](https://appcenter.ms) is recommended for CI.
+Since Flutter is not supported by AppCenter, check out [official scripts](https://github.com/microsoft/appcenter/tree/master/sample-build-scripts/flutter) for more info on setup.
 
 ## Maintainers
 
