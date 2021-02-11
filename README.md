@@ -52,7 +52,11 @@ Use [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflo
 
 ## Tools
 
-TBD
+### Networking with Dio
+Networking is implemented using [dio](https://pub.dev/packages/dio), to provide HTTP client as well as interceptors, combined with [json_serializable](https://pub.dev/packages/json_serializable) for generating utilities for transforming classes to and from JSON.
+
+### Dependency injection and state management with Provider
+We are using [provider](https://pub.dev/packages/provider) library for dependency injection, as well as state management.
 
 ### Quality gates
 
@@ -64,7 +68,7 @@ This template is using [dartanalyzer](https://dart.dev/tools/dartanalyzer) with 
 
 ### Testing
 
-We are using [flutter_test library](https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html).
+We are using [flutter_test library](https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html) with [mockito](https://pub.dev/packages/mockito) for mocking and [http_mock_adapter](https://pub.dev/packages/http_mock_adapter) for mocking HTTP requests.
 
 ### Continuous Integration
 
