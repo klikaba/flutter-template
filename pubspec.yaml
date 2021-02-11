@@ -29,12 +29,34 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
 
+  # State management
+  # Other options: https://flutter.dev/docs/development/data-and-backend/state-mgmt/options
+  provider: ^4.3.3
+
+  # Http client
+  dio: ^3.0.10
+
+  # Json serialization
+  json_annotation: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   # Linter
   pedantic: ^1.9.0
+
+  # Required for code generation for json serialization
+  build_runner: ^1.0.0
+
+  # Json serialization
+  json_serializable: ^3.2.0
+
+  # Mocking library
+  mockito: ^4.1.4
+  # Mocking HTTP requests for Dio
+  http_mock_adapter: ^0.1.5
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
