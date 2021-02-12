@@ -55,6 +55,9 @@ Use [GitFlow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflo
 ### Networking with Dio
 Networking is implemented using [dio](https://pub.dev/packages/dio), to provide HTTP client as well as interceptors, combined with [json_serializable](https://pub.dev/packages/json_serializable) for generating utilities for transforming classes to and from JSON.
 
+### Local DB with Hive
+[Hive](https://pub.dev/packages/hive) is used for local database.
+
 ### Dependency injection and state management with Provider
 We are using [provider](https://pub.dev/packages/provider) library for dependency injection, as well as state management.
 

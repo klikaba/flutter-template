@@ -7,4 +7,7 @@ enum Flavor {
 
 class Config {
   static Flavor appFlavor;
+  static String baseUrl;
+  static String clientId;
+  static String clientSecret;
 }

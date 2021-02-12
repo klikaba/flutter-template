@@ -6,8 +6,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 import 'package:flutter_template/data/auth/oauth2/api.dart';
+import 'package:flutter_template/data/auth/config.dart';
 
-class MockDio extends Mock implements Dio {}
+class FakeConfig implements ClientConfig {
+  @override
+  String clientId;
+  @override
+  String clientSecret;
+}
 
 void main() {
   group('OAuth2TokenApi', () {
@@ -17,7 +23,7 @@ void main() {
     dio.httpClientAdapter = dioAdapter;
     final api = OAuth2TokenApi(dio);
 
-    group('Given working API', () {
+    group('given working API', () {
       final response = {
         'accessToken': 'token',
         'refreshToken': 'refreshToken',
@@ -56,7 +62,7 @@ void main() {
       });
     });
 
-    group('Given failing API', () {
+    group('given failing API', () {
       setUp(() {
         dioAdapter
             .onPost('oauth/token')
@@ -79,6 +85,33 @@ void main() {
             api.refreshToken(RefreshOAuth2TokenRequest(
                 refreshToken: 'test', clientId: 'test', clientSecret: 'test')),
             throwsException);
+      });
+    });
+  });
+
+  group('OAuth2TokenRequestFactory', () {
+    group('given client config', () {
+      final clientConfig = FakeConfig();
+      clientConfig.clientId = 'testClientId';
+      clientConfig.clientSecret = 'testClientSecret';
+      final requestFactory = OAuth2TokenRequestFactory(clientConfig);
+
+      test('it should use config for creation request', () {
+        final result =
+            requestFactory.makeCreateRequest('testUsername', 'testPassword');
+
+        expect(result.clientId, equals(clientConfig.clientId));
+        expect(result.clientSecret, equals(clientConfig.clientSecret));
+        expect(result.username, equals('testUsername'));
+        expect(result.password, equals('testPassword'));
+      });
+
+      test('it should use config for refresh request', () {
+        final result = requestFactory.makeRefreshRequest('testRefreshToken');
+
+        expect(result.clientId, equals(clientConfig.clientId));
+        expect(result.clientSecret, equals(clientConfig.clientSecret));
+        expect(result.refreshToken, equals('testRefreshToken'));
       });
     });
   });

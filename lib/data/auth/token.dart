@@ -7,7 +7,7 @@ abstract class AuthToken {
 
 /// Represents auth token that can expire
 abstract class ExpirableToken extends AuthToken {
-  bool expired();
+  bool isExpired();
 }
 
 /// Represents expirable auth token that can be refreshed

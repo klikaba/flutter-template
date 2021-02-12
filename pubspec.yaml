@@ -39,6 +39,13 @@ dependencies:
   # Json serialization
   json_annotation: ^3.0.0
 
+  # Hive NoSQL Database
+  hive: ^1.4.4+1
+  hive_flutter: ^0.3.1
+
+  # Path provider for storing hive DB
+  path_provider:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -46,7 +53,7 @@ dev_dependencies:
   # Linter
   pedantic: ^1.9.0
 
-  # Required for code generation for json serialization
+  # Required for code generation for json serialization and Hive DB
   build_runner: ^1.0.0
 
   # Json serialization
@@ -54,8 +61,12 @@ dev_dependencies:
 
   # Mocking library
   mockito: ^4.1.4
+
   # Mocking HTTP requests for Dio
   http_mock_adapter: ^0.1.5
+
+  # Hive DB code generation
+  hive_generator:
 
 
 # For information on the generic Dart part of this file, see the

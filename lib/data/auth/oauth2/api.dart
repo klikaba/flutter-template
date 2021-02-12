@@ -1,5 +1,6 @@
 import 'dart:convert' as convert;
 import 'package:dio/dio.dart';
+import 'package:flutter_template/data/auth/config.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'token.dart';
@@ -38,6 +39,27 @@ class RefreshOAuth2TokenRequest extends JsonEncodable {
 
   factory RefreshOAuth2TokenRequest.fromJson(Map<String, dynamic> json) =>
       _$RefreshOAuth2TokenRequestFromJson(json);
+}
+
+class OAuth2TokenRequestFactory {
+  final ClientConfig _config;
+
+  OAuth2TokenRequestFactory(this._config);
+
+  RefreshOAuth2TokenRequest makeRefreshRequest(String refreshToken) {
+    return RefreshOAuth2TokenRequest(
+        refreshToken: refreshToken,
+        clientId: _config.clientId,
+        clientSecret: _config.clientSecret);
+  }
+
+  CreateOAuth2TokenRequest makeCreateRequest(String username, String password) {
+    return CreateOAuth2TokenRequest(
+        username: username,
+        password: password,
+        clientId: _config.clientId,
+        clientSecret: _config.clientSecret);
+  }
 }
 
 class OAuth2TokenApi {
