@@ -42,7 +42,7 @@ class OAuth2Token extends RefreshableToken with JsonEncodable {
 }
 
 class OAuth2TokenStorage {
-  final Box _tokenBox;
+  final Box<OAuth2Token> _tokenBox;
 
   OAuth2TokenStorage(this._tokenBox);
 

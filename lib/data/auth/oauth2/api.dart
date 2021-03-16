@@ -68,13 +68,15 @@ class OAuth2TokenApi {
   OAuth2TokenApi(this._client);
 
   Future<OAuth2Token> createToken(CreateOAuth2TokenRequest request) async {
-    final response = await _client.post('oauth/token', data: request.toJson());
-    return OAuth2Token.fromJson(convert.jsonDecode(response.data));
+    final response = await _client.post('oauth/token',
+        data: request.toJson(), queryParameters: {'grant_type': 'password'});
+    return OAuth2Token.fromJson(response.data);
   }
 
   Future<OAuth2Token> refreshToken(RefreshOAuth2TokenRequest request) async {
-    final response =
-        await _client.post('oauth/refresh', data: request.toJson());
-    return OAuth2Token.fromJson(convert.jsonDecode(response.data));
+    final response = await _client.post('oauth/token',
+        data: request.toJson(),
+        queryParameters: {'grant_type': 'refresh_token'});
+    return OAuth2Token.fromJson(response.data);
   }
 }

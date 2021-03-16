@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 
 import 'package:flutter_template/data/auth/oauth2/token.dart';
 
-class MockBox extends Mock implements Box {}
+class MockBox extends Mock implements Box<OAuth2Token> {}
 
 void main() {
   group('OAuth2Token', () {

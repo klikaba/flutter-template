@@ -10,4 +10,5 @@ class Config {
   static String baseUrl;
   static String clientId;
   static String clientSecret;
+  static bool enableLogs;
 }
