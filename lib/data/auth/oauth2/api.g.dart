@@ -11,8 +11,8 @@ CreateOAuth2TokenRequest _$CreateOAuth2TokenRequestFromJson(
   return CreateOAuth2TokenRequest(
     username: json['username'] as String,
     password: json['password'] as String,
-    clientId: json['clientId'] as String,
-    clientSecret: json['clientSecret'] as String,
+    clientId: json['client_id'] as String,
+    clientSecret: json['client_secret'] as String,
   );
 }
 
@@ -21,23 +21,23 @@ Map<String, dynamic> _$CreateOAuth2TokenRequestToJson(
     <String, dynamic>{
       'username': instance.username,
       'password': instance.password,
-      'clientId': instance.clientId,
-      'clientSecret': instance.clientSecret,
+      'client_id': instance.clientId,
+      'client_secret': instance.clientSecret,
     };
 
 RefreshOAuth2TokenRequest _$RefreshOAuth2TokenRequestFromJson(
     Map<String, dynamic> json) {
   return RefreshOAuth2TokenRequest(
-    refreshToken: json['refreshToken'] as String,
-    clientId: json['clientId'] as String,
-    clientSecret: json['clientSecret'] as String,
+    refreshToken: json['refresh_token'] as String,
+    clientId: json['client_id'] as String,
+    clientSecret: json['client_secret'] as String,
   );
 }
 
 Map<String, dynamic> _$RefreshOAuth2TokenRequestToJson(
         RefreshOAuth2TokenRequest instance) =>
     <String, dynamic>{
-      'refreshToken': instance.refreshToken,
-      'clientId': instance.clientId,
-      'clientSecret': instance.clientSecret,
+      'refresh_token': instance.refreshToken,
+      'client_id': instance.clientId,
+      'client_secret': instance.clientSecret,
     };

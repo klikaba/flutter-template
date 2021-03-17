@@ -1,4 +1,3 @@
-import 'dart:convert' as convert;
 import 'package:dio/dio.dart';
 import 'package:flutter_template/data/auth/config.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -12,7 +11,9 @@ part 'api.g.dart';
 class CreateOAuth2TokenRequest extends JsonEncodable {
   final String username;
   final String password;
+  @JsonKey(name: 'client_id')
   final String clientId;
+  @JsonKey(name: 'client_secret')
   final String clientSecret;
 
   CreateOAuth2TokenRequest(
@@ -27,8 +28,11 @@ class CreateOAuth2TokenRequest extends JsonEncodable {
 
 @JsonSerializable(nullable: false)
 class RefreshOAuth2TokenRequest extends JsonEncodable {
+  @JsonKey(name: 'refresh_token')
   final String refreshToken;
+  @JsonKey(name: 'client_id')
   final String clientId;
+  @JsonKey(name: 'client_secret')
   final String clientSecret;
 
   RefreshOAuth2TokenRequest(
