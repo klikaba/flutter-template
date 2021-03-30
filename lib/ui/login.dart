@@ -77,7 +77,8 @@ class _LoginFormWidgetState extends State<LoginFormWidget> {
                       .makeCreateRequest(_username.text, _password.text);
                   Provider.of<OAuth2TokenApi>(context, listen: false)
                       .createToken(request)
-                      .then((res) => Navigator.pushNamed(context, '/main'))
+                      .then((res) => Navigator.pushNamedAndRemoveUntil(
+                          context, '/main', (_) => false))
                       .catchError(
                           (error) => Scaffold.of(context).showSnackBar(SnackBar(
                                 content: Text('An issue occurred.'),

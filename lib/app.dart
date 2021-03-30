@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/data/session/api.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -55,12 +56,15 @@ void runTemplateApp() async {
 
   final usersApi = UserApi(httpClient);
   final usersRepository = UserRepository(usersApi, await Hive.openBox('users'));
+  final sessionRepository =
+      SessionRepository(tokenApi, tokenStorage, tokenRequestFactory);
 
   runApp(MultiProvider(providers: [
     Provider(create: (context) => httpClient),
     Provider(create: (context) => tokenApi),
     Provider(create: (context) => tokenRequestFactory),
-    Provider(create: (context) => usersRepository)
+    Provider(create: (context) => usersRepository),
+    Provider(create: (context) => sessionRepository)
   ], child: MyApp()));
 }
 

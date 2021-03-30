@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/data/auth/oauth2/api.dart';
 import 'package:provider/provider.dart';
-import 'dart:developer' as developer;
 
 import '../data/user/api.dart';
 
@@ -81,7 +80,8 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                       .then((res) =>
                           Provider.of<OAuth2TokenApi>(context, listen: false)
                               .createToken(request))
-                      .then((res) => Navigator.pushNamed(context, '/main'))
+                      .then((res) => Navigator.pushNamedAndRemoveUntil(
+                          context, '/main', (_) => false))
                       .catchError(
                           (error) => Scaffold.of(context).showSnackBar(SnackBar(
                                 content: Text('An issue occurred. $error'),
