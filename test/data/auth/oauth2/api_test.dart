@@ -31,10 +31,10 @@ void main() {
 
     group('given working API', () {
       final response = {
-        'accessToken': 'token',
-        'refreshToken': 'refreshToken',
-        'createdAt': now,
-        'expirationPeriod': 1000
+        'access_token': 'token',
+        'refresh_token': 'refreshToken',
+        'created_at': now,
+        'expires_in': 1000
       };
       setUp(() {
         // Waiting for https://github.com/lomsa-dev/http-mock-adapter/pull/84

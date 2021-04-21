@@ -11,12 +11,16 @@ part 'token.g.dart';
 @HiveType(typeId: 1)
 class OAuth2Token extends RefreshableToken with JsonEncodable {
   @HiveField(0)
+  @JsonKey(name: 'expires_in')
   final int expirationPeriod;
   @HiveField(1)
+  @JsonKey(name: 'created_at')
   final int createdAt;
   @HiveField(2)
+  @JsonKey(name: 'access_token')
   final String accessToken;
   @HiveField(3)
+  @JsonKey(name: 'refresh_token')
   final String refreshToken;
 
   OAuth2Token(this.expirationPeriod, this.createdAt, this.accessToken,

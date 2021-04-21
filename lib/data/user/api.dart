@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:http_mock_adapter/http_mock_adapter.dart';
-import 'dart:io';
 
 import '../base/json.dart';
 import 'model.dart';
@@ -55,7 +53,6 @@ class UserRepository {
   Stream<User> get(int id) {
     Future<User> loadUser() async {
       final user = await _api.get(id);
-      stdout.writeln('$user');
       await _usersBox.put('${user.id}', user);
       return user;
     }

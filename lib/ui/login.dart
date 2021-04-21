@@ -22,7 +22,6 @@ class LoginWidget extends StatelessWidget {
   }
 }
 
-/// This is the stateful widget that the main application instantiates.
 class LoginFormWidget extends StatefulWidget {
   LoginFormWidget({Key key}) : super(key: key);
 

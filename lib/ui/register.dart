@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/data/auth/oauth2/api.dart';
+import 'package:flutter_template/data/session/api.dart';
+import 'package:flutter_template/data/session/model.dart';
 import 'package:provider/provider.dart';
 
 import '../data/user/api.dart';
@@ -70,16 +72,12 @@ class _RegisterFormWidgetState extends State<RegisterFormWidget> {
                 // Validate will return true if the form is valid, or false if
                 // the form is invalid.
                 if (_formKey.currentState.validate()) {
-                  final request = Provider.of<OAuth2TokenRequestFactory>(
-                          context,
-                          listen: false)
-                      .makeCreateRequest(_username.text, _password.text);
                   Provider.of<UserRepository>(context, listen: false)
                       .create(RegistrationInfo(
                           email: _username.text, password: _password.text))
-                      .then((res) =>
-                          Provider.of<OAuth2TokenApi>(context, listen: false)
-                              .createToken(request))
+                      .then((res) => Provider.of<SessionRepository>(context,
+                              listen: false)
+                          .logIn(Credentials(_username.text, _password.text)))
                       .then((res) => Navigator.pushNamedAndRemoveUntil(
                           context, '/main', (_) => false))
                       .catchError(

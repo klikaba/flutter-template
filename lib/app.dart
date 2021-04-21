@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/data/country/api.dart';
+import 'package:flutter_template/data/country/model.dart';
 import 'package:flutter_template/data/session/api.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -33,7 +35,8 @@ void runTemplateApp() async {
   Hive
     ..init(dir.path)
     ..registerAdapter(OAuth2TokenAdapter())
-    ..registerAdapter(UserAdapter());
+    ..registerAdapter(UserAdapter())
+    ..registerAdapter(CountryAdapter());
 
   final httpClient = Dio(BaseOptions(baseUrl: Config.baseUrl));
   final clientConfig = SimpleClientConfig();
@@ -59,12 +62,17 @@ void runTemplateApp() async {
   final sessionRepository =
       SessionRepository(tokenApi, tokenStorage, tokenRequestFactory);
 
+  final countriesApi = CountriesApi(httpClient);
+  final countriesRepository =
+      CountriesRepository(countriesApi, await Hive.openBox('countries'));
+
   runApp(MultiProvider(providers: [
     Provider(create: (context) => httpClient),
     Provider(create: (context) => tokenApi),
     Provider(create: (context) => tokenRequestFactory),
     Provider(create: (context) => usersRepository),
-    Provider(create: (context) => sessionRepository)
+    Provider(create: (context) => sessionRepository),
+    Provider(create: (context) => countriesRepository)
   ], child: MyApp()));
 }
 
