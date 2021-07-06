@@ -27,7 +27,8 @@ void main() {
       };
 
       setUp(() {
-        dioAdapter.onGet('api/v1/countries').reply(200, response);
+        dioAdapter.onGet(
+            'api/v1/countries', (request) => request.reply(200, response));
       });
 
       test('getAll should return countries', () async {
@@ -46,7 +47,8 @@ void main() {
 
     group('given failing API', () {
       setUp(() {
-        dioAdapter.onPost('api/v1/countries').reply(400, 'error');
+        dioAdapter.onGet(
+            'api/v1/countries', (request) => request.reply(400, 'error'));
       });
 
       test('getAll should fail', () async {

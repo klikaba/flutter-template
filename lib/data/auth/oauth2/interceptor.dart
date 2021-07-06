@@ -16,17 +16,18 @@ class OAuth2Interceptor extends Interceptor {
   OAuth2Interceptor(this._dio, this._tokenStorage, this._tokenRefresher);
 
   @override
-  Future onRequest(RequestOptions options) async {
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
     final header = options.headers[_authHeader];
 
     if (header != null) {
-      return options;
+      return handler.next(options);
     }
 
     var token = _tokenStorage.getToken();
 
     if (token == null) {
-      return options;
+      return handler.next(options);
     }
 
     if (token.isExpired()) {
@@ -45,26 +46,23 @@ class OAuth2Interceptor extends Interceptor {
 
     options.headers[_authHeader] = 'Bearer ${token.accessToken}';
 
-    return options;
+    return handler.next(options);
   }
 
   @override
-  Future onResponse(Response response) async {}
-
-  @override
-  Future onError(DioError error) async {
-    if (error.type != DioErrorType.RESPONSE ||
+  void onError(DioError error, ErrorInterceptorHandler handler) async {
+    if (error.type != DioErrorType.response ||
         error.response.statusCode != 401) {
-      return error;
+      return handler.next(error);
     }
 
-    final header = error.request.headers[_authHeader] as String;
+    final header = error.requestOptions.headers[_authHeader] as String;
 
     // There was an auth attempt but it failed
     if (header.length < 7 || !header.startsWith('Bearer')) {
       // Bad auth request, we should not attempt to fix it
       developer.log('Bad auth request was made. Authorization header: $header');
-      return error;
+      return handler.next(error);
     }
 
     // get token - remove prefix
@@ -74,13 +72,14 @@ class OAuth2Interceptor extends Interceptor {
 
     if (storedToken == null) {
       developer.log("No token stored. Can't attempt auth");
-      return error;
+      return handler.next(error);
     }
 
     if (sentToken != storedToken.accessToken) {
       // Sent token is not the same as stored one
       // Retry with stored one
-      return _retryWithToken(error.request, storedToken.accessToken);
+      return await _retryWithToken(
+          error.requestOptions, storedToken.accessToken, handler);
     }
 
     if (!storedToken.isExpired()) {
@@ -88,7 +87,7 @@ class OAuth2Interceptor extends Interceptor {
       // But it hasn't expired
       // Seems like a bad token - abort
       developer.log('Bad token stored');
-      return error;
+      return handler.next(error);
     }
 
     _dio.lock();
@@ -100,13 +99,16 @@ class OAuth2Interceptor extends Interceptor {
     }
     _dio.unlock();
     // retry with new token
-    return _retryWithToken(error.request, newToken.accessToken);
+    return _retryWithToken(error.requestOptions, newToken.accessToken, handler);
   }
 
-  Future<Response> _retryWithToken(
-      RequestOptions originalRequest, String token) async {
+  void _retryWithToken(RequestOptions originalRequest, String token,
+      ErrorInterceptorHandler handler) async {
     originalRequest.headers[_authHeader] = 'Bearer $token';
-    return _dio.request(originalRequest.path, options: originalRequest);
+    return _dio
+        .fetch(originalRequest)
+        .then((r) => handler.resolve(r))
+        .catchError((error, stackTrace) => handler.reject(error));
   }
 }
 

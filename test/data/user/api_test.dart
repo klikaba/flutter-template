@@ -30,13 +30,10 @@ void main() {
       final registrationRequest =
           RegistrationInfo(email: 'test', password: 'test');
       setUp(() {
-        // Waiting for https://github.com/lomsa-dev/http-mock-adapter/pull/84
         dioAdapter
-            .onPost('api/v1/users',
-                data: {'user': registrationRequest.toJson()})
-            .reply(200, response)
-            .onGet('api/v1/users/1')
-            .reply(200, response);
+          ..onPost('api/v1/users', (request) => request.reply(200, response),
+              data: {'user': registrationRequest.toJson()})
+          ..onGet('api/v1/users/1', (request) => request.reply(200, response));
       });
 
       test('create should return User', () async {
@@ -63,10 +60,9 @@ void main() {
     group('given failing API', () {
       setUp(() {
         dioAdapter
-            .onPost('api/v1/users')
-            .reply(400, 'error')
-            .onGet('api/v1/users/1')
-            .reply(400, 'error');
+          ..onPost('api/v1/users', (request) => request.reply(400, 'error'),
+              data: Matchers.any)
+          ..onGet('api/v1/users/1', (request) => request.reply(400, 'error'));
       });
 
       test('create should fail', () async {

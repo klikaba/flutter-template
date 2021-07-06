@@ -14,6 +14,12 @@ class MockOAuth2Token extends Mock implements OAuth2Token {}
 
 class MockOAuth2TokenRefresher extends Mock implements OAuth2TokenRefresher {}
 
+class MockRequestInterceptorHandler extends Mock
+    implements RequestInterceptorHandler {}
+
+class MockErrorInterceptorHandler extends Mock
+    implements ErrorInterceptorHandler {}
+
 class MockDio extends Mock implements Dio {}
 
 class MockOAuth2TokenRequestFactory extends Mock
@@ -28,14 +34,15 @@ void main() {
 
     group('given request with Auth header', () {
       var request;
-      var result;
+      var handler;
       setUp(() async {
-        request = RequestOptions(headers: {'Authorization': 'test'});
-        result = await interceptor.onRequest(request);
+        request = RequestOptions(path: '', headers: {'Authorization': 'test'});
+        handler = MockRequestInterceptorHandler();
+        await interceptor.onRequest(request, handler);
       });
 
       test('it should not change request', () {
-        expect(result, equals(request));
+        verify(handler.next(request));
       });
     });
 
@@ -43,38 +50,45 @@ void main() {
       var request;
 
       setUp(() {
-        request = RequestOptions();
+        request = RequestOptions(path: '');
       });
 
       group('and no stored token', () {
-        var result;
+        var handler;
         setUp(() async {
+          handler = MockRequestInterceptorHandler();
           reset(tokenStorage);
           when(tokenStorage.getToken()).thenReturn(null);
 
-          result = await interceptor.onRequest(request);
+          await interceptor.onRequest(request, handler);
         });
 
         test('it should not change request', () {
-          expect(result, equals(request));
+          verify(handler.next(request));
         });
       });
 
       group('and valid stored token', () {
         final storedToken = MockOAuth2Token();
-        var result;
+        var handler;
         setUp(() async {
+          handler = MockRequestInterceptorHandler();
           reset(tokenStorage);
           reset(dio);
           when(tokenStorage.getToken()).thenReturn(storedToken);
           when(storedToken.accessToken).thenReturn('access');
           when(storedToken.isExpired()).thenReturn(false);
 
-          result = await interceptor.onRequest(request);
+          await interceptor.onRequest(request, handler);
         });
 
         test('it should add stored token to headers', () {
-          expect(result.headers['Authorization'], equals('Bearer access'));
+          expect(
+              verify(handler.next(captureAny))
+                  .captured
+                  .single
+                  .headers['Authorization'],
+              equals('Bearer access'));
           verify(tokenStorage.getToken());
         });
 
@@ -90,8 +104,9 @@ void main() {
       group('and expired stored token', () {
         final storedToken = MockOAuth2Token();
         final newToken = MockOAuth2Token();
-        var result;
+        var handler;
         setUp(() async {
+          handler = MockRequestInterceptorHandler();
           reset(tokenStorage);
           reset(dio);
           reset(tokenRefresher);
@@ -101,11 +116,15 @@ void main() {
           when(tokenRefresher.refreshToken()).thenAnswer((_) async => newToken);
           when(newToken.accessToken).thenReturn('refreshed access');
 
-          result = await interceptor.onRequest(request);
+          await interceptor.onRequest(request, handler);
         });
 
         test('it should add refreshed token to headers', () {
-          expect(result.headers['Authorization'],
+          expect(
+              verify(handler.next(captureAny))
+                  .captured
+                  .single
+                  .headers['Authorization'],
               equals('Bearer refreshed access'));
           verify(tokenStorage.getToken());
         });
@@ -121,29 +140,36 @@ void main() {
     });
 
     group('given a non response error', () {
-      final error = DioError(type: DioErrorType.SEND_TIMEOUT);
-      var result;
+      final error = DioError(
+          type: DioErrorType.sendTimeout,
+          requestOptions: RequestOptions(path: ''));
+      MockErrorInterceptorHandler handler;
 
       setUp(() async {
-        result = await interceptor.onError(error);
+        handler = MockErrorInterceptorHandler();
+        await interceptor.onError(error, handler);
       });
 
       test('it should pass down the error', () {
-        expect(result, equals(error));
+        verify(handler.next(error));
       });
     });
 
     group('given a non auth error', () {
+      var requestOptions = RequestOptions(path: '');
       final error = DioError(
-          type: DioErrorType.RESPONSE, response: Response(statusCode: 400));
-      var result;
+          requestOptions: requestOptions,
+          type: DioErrorType.response,
+          response: Response(statusCode: 400, requestOptions: requestOptions));
+      MockErrorInterceptorHandler handler;
 
       setUp(() async {
-        result = await interceptor.onError(error);
+        handler = MockErrorInterceptorHandler();
+        await interceptor.onError(error, handler);
       });
 
       test('it should pass down the error', () {
-        expect(result, equals(error));
+        verify(handler.next(error));
       });
     });
 

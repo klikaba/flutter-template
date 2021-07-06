@@ -20,15 +20,6 @@ void main() {
     dio.httpClientAdapter = dioAdapter;
     final api = OAuth2TokenApi(dio);
 
-    final passwordRequest = Request(
-        route: 'oauth/token',
-        method: RequestMethods.POST,
-        queryParameters: {'grant_type': 'password'});
-    final refreshRequest = Request(
-        route: 'oauth/token',
-        method: RequestMethods.POST,
-        queryParameters: {'grant_type': 'refresh_token'});
-
     group('given working API', () {
       final response = {
         'access_token': 'token',
@@ -37,12 +28,12 @@ void main() {
         'expires_in': 1000
       };
       setUp(() {
-        // Waiting for https://github.com/lomsa-dev/http-mock-adapter/pull/84
         dioAdapter
-            .onRoute(passwordRequest.route, request: passwordRequest)
-            .reply(200, response)
-            .onRoute(refreshRequest.route, request: refreshRequest)
-            .reply(200, response);
+          ..onPost('oauth/token', (request) => request.reply(200, response),
+              queryParameters: {'grant_type': 'password'}, data: Matchers.any)
+          ..onPost('oauth/token', (request) => request.reply(200, response),
+              queryParameters: {'grant_type': 'refresh_token'},
+              data: Matchers.any);
       });
 
       test('createToken should return OAuth2Token', () async {
@@ -72,10 +63,11 @@ void main() {
     group('given failing API', () {
       setUp(() {
         dioAdapter
-            .onRoute(passwordRequest.route, request: passwordRequest)
-            .reply(400, 'error')
-            .onRoute(refreshRequest.route, request: refreshRequest)
-            .reply(400, 'error');
+          ..onPost('oauth/token', (request) => request.reply(400, 'error'),
+              queryParameters: {'grant_type': 'password'}, data: Matchers.any)
+          ..onPost('oauth/token', (request) => request.reply(400, 'error'),
+              queryParameters: {'grant_type': 'refresh_token'},
+              data: Matchers.any);
       });
       test('createToken should fail', () async {
         expect(
