@@ -1,5 +1,5 @@
-import 'app.dart';
-import 'config.dart';
+import 'package:flutter_template/app.dart';
+import 'package:flutter_template/config.dart';
 
 void main() {
   Config.appFlavor = Flavor.DEVELOPMENT;
@@ -7,5 +7,6 @@ void main() {
   Config.clientId = 'abc';
   Config.clientSecret = 'def';
   Config.enableLogs = true;
+
   runTemplateApp();
 }

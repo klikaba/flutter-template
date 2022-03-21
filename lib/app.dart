@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/data/country/api.dart';
@@ -31,9 +33,10 @@ void runTemplateApp() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   /// TODO create somewhere else?
-  final dir = await getExternalStorageDirectory();
+  final dir = Platform.isIOS ? await getApplicationDocumentsDirectory() : await getExternalStorageDirectory();
+
   Hive
-    ..init(dir.path)
+    ..init(dir!.path)
     ..registerAdapter(OAuth2TokenAdapter())
     ..registerAdapter(UserAdapter())
     ..registerAdapter(CountryAdapter());
@@ -45,26 +48,21 @@ void runTemplateApp() async {
   final tokenApi = OAuth2TokenApi(noAuthHttpClient);
   final tokenStorage = OAuth2TokenStorage(await Hive.openBox('tokenStorage'));
   final tokenRequestFactory = OAuth2TokenRequestFactory(clientConfig);
-  final tokenRefresher =
-      OAuth2TokenRefresher(tokenApi, tokenStorage, tokenRequestFactory);
-  final tokenInterceptor =
-      OAuth2Interceptor(httpClient, tokenStorage, tokenRefresher);
+  final tokenRefresher = OAuth2TokenRefresher(tokenApi, tokenStorage, tokenRequestFactory);
+  final tokenInterceptor = OAuth2Interceptor(httpClient, tokenStorage, tokenRefresher);
   httpClient.interceptors.add(tokenInterceptor);
   if (Config.enableLogs) {
-    final logInterceptor =
-        LogInterceptor(requestBody: true, responseBody: true);
+    final logInterceptor = LogInterceptor(requestBody: true, responseBody: true);
     httpClient.interceptors.add(logInterceptor);
     noAuthHttpClient.interceptors.add(logInterceptor);
   }
 
   final usersApi = UserApi(httpClient);
   final usersRepository = UserRepository(usersApi, await Hive.openBox('users'));
-  final sessionRepository =
-      SessionRepository(tokenApi, tokenStorage, tokenRequestFactory);
+  final sessionRepository = SessionRepository(tokenApi, tokenStorage, tokenRequestFactory);
 
   final countriesApi = CountriesApi(httpClient);
-  final countriesRepository =
-      CountriesRepository(countriesApi, await Hive.openBox('countries'));
+  final countriesRepository = CountriesRepository(countriesApi, await Hive.openBox('countries'));
 
   runApp(MultiProvider(providers: [
     Provider(create: (context) => httpClient),

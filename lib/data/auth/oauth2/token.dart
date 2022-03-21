@@ -1,30 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:flutter_template/data/auth/token.dart';
+import 'package:flutter_template/data/base/json.dart';
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-import '../../base/json.dart';
-import '../token.dart';
 part 'token.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 @immutable
 @HiveType(typeId: 1)
 class OAuth2Token extends RefreshableToken with JsonEncodable {
   @HiveField(0)
-  @JsonKey(name: 'expires_in')
-  final int expirationPeriod;
-  @HiveField(1)
-  @JsonKey(name: 'created_at')
-  final int createdAt;
+  @JsonKey(name: 'expiresIn')
+  final int expiresIn;
   @HiveField(2)
-  @JsonKey(name: 'access_token')
+  @JsonKey(name: 'accessToken')
   final String accessToken;
   @HiveField(3)
-  @JsonKey(name: 'refresh_token')
+  @JsonKey(name: 'refreshToken')
   final String refreshToken;
 
-  OAuth2Token(this.expirationPeriod, this.createdAt, this.accessToken,
-      this.refreshToken);
+  OAuth2Token(this.expiresIn, this.accessToken, this.refreshToken);
 
   @override
   String get refreshTokenString => refreshToken;
@@ -35,14 +31,13 @@ class OAuth2Token extends RefreshableToken with JsonEncodable {
   @override
   bool isExpired() {
     final now = DateTime.now().millisecondsSinceEpoch;
-    return now < (createdAt + expirationPeriod);
+    return now < expiresIn;
   }
 
   @override
   Map<String, dynamic> toJson() => _$OAuth2TokenToJson(this);
 
-  factory OAuth2Token.fromJson(Map<String, dynamic> json) =>
-      _$OAuth2TokenFromJson(json);
+  factory OAuth2Token.fromJson(Map<String, dynamic> json) => _$OAuth2TokenFromJson(json);
 }
 
 class OAuth2TokenStorage {
@@ -54,7 +49,7 @@ class OAuth2TokenStorage {
     _tokenBox.put('oauth2token', token);
   }
 
-  OAuth2Token getToken() => _tokenBox.get('oauth2token');
+  OAuth2Token? getToken() => _tokenBox.get('oauth2token');
 
   void clearToken() {
     _tokenBox.delete('oauth2token');

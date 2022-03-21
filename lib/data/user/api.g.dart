@@ -6,12 +6,11 @@ part of 'api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-RegistrationInfo _$RegistrationInfoFromJson(Map<String, dynamic> json) {
-  return RegistrationInfo(
-    email: json['email'] as String,
-    password: json['password'] as String,
-  );
-}
+RegistrationInfo _$RegistrationInfoFromJson(Map<String, dynamic> json) =>
+    RegistrationInfo(
+      email: json['email'] as String,
+      password: json['password'] as String,
+    );
 
 Map<String, dynamic> _$RegistrationInfoToJson(RegistrationInfo instance) =>
     <String, dynamic>{

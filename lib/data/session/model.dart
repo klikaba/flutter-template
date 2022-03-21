@@ -1,9 +1,9 @@
+import 'package:flutter_template/data/base/json.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../base/json.dart';
 part 'model.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 class Credentials extends JsonEncodable {
   final String username;
   final String password;
@@ -13,6 +13,5 @@ class Credentials extends JsonEncodable {
   @override
   Map<String, dynamic> toJson() => _$CredentialsToJson(this);
 
-  factory Credentials.fromJson(Map<String, dynamic> json) =>
-      _$CredentialsFromJson(json);
+  factory Credentials.fromJson(Map<String, dynamic> json) => _$CredentialsFromJson(json);
 }

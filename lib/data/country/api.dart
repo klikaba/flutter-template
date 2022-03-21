@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_template/data/country/model.dart';
 import 'package:hive/hive.dart';
-
-import 'model.dart';
 
 class CountriesApi {
   final Dio _client;
@@ -10,8 +9,7 @@ class CountriesApi {
 
   Future<Iterable<Country>> getAll() async {
     final response = await _client.get('api/v1/countries');
-    return (response.data['countries'] as List)
-        .map((country) => Country.fromJson(country));
+    return (response.data['countries'] as List).map((country) => Country.fromJson(country));
   }
 }
 
@@ -28,7 +26,6 @@ class CountriesRepository {
       return countries;
     }
 
-    return Stream.fromFutures(
-        [Future.value(_countriesBox.toMap().values), loadContries()]);
+    return Stream.fromFutures([Future.value(_countriesBox.toMap().values), loadContries()]);
   }
 }

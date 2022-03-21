@@ -6,12 +6,10 @@ part of 'model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Credentials _$CredentialsFromJson(Map<String, dynamic> json) {
-  return Credentials(
-    json['username'] as String,
-    json['password'] as String,
-  );
-}
+Credentials _$CredentialsFromJson(Map<String, dynamic> json) => Credentials(
+      json['username'] as String,
+      json['password'] as String,
+    );
 
 Map<String, dynamic> _$CredentialsToJson(Credentials instance) =>
     <String, dynamic>{
