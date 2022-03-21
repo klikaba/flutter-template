@@ -18,7 +18,6 @@ class OAuth2TokenAdapter extends TypeAdapter<OAuth2Token> {
     };
     return OAuth2Token(
       fields[0] as int,
-      fields[1] as int,
       fields[2] as String,
       fields[3] as String,
     );
@@ -27,11 +26,9 @@ class OAuth2TokenAdapter extends TypeAdapter<OAuth2Token> {
   @override
   void write(BinaryWriter writer, OAuth2Token obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(3)
       ..writeByte(0)
-      ..write(obj.expirationPeriod)
-      ..writeByte(1)
-      ..write(obj.createdAt)
+      ..write(obj.expiresIn)
       ..writeByte(2)
       ..write(obj.accessToken)
       ..writeByte(3)
@@ -53,19 +50,15 @@ class OAuth2TokenAdapter extends TypeAdapter<OAuth2Token> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-OAuth2Token _$OAuth2TokenFromJson(Map<String, dynamic> json) {
-  return OAuth2Token(
-    json['expires_in'] as int,
-    json['created_at'] as int,
-    json['access_token'] as String,
-    json['refresh_token'] as String,
-  );
-}
+OAuth2Token _$OAuth2TokenFromJson(Map<String, dynamic> json) => OAuth2Token(
+      json['expiresIn'] as int,
+      json['accessToken'] as String,
+      json['refreshToken'] as String,
+    );
 
 Map<String, dynamic> _$OAuth2TokenToJson(OAuth2Token instance) =>
     <String, dynamic>{
-      'expires_in': instance.expirationPeriod,
-      'created_at': instance.createdAt,
-      'access_token': instance.accessToken,
-      'refresh_token': instance.refreshToken,
+      'expiresIn': instance.expiresIn,
+      'accessToken': instance.accessToken,
+      'refreshToken': instance.refreshToken,
     };

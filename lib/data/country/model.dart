@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:json_annotation/json_annotation.dart';
+import 'package:flutter_template/data/base/json.dart';
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-import '../base/json.dart';
 part 'model.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 @immutable
 @HiveType(typeId: 3)
 class Country extends JsonEncodable {
@@ -19,6 +19,5 @@ class Country extends JsonEncodable {
   @override
   Map<String, dynamic> toJson() => _$CountryToJson(this);
 
-  factory Country.fromJson(Map<String, dynamic> json) =>
-      _$CountryFromJson(json);
+  factory Country.fromJson(Map<String, dynamic> json) => _$CountryFromJson(json);
 }

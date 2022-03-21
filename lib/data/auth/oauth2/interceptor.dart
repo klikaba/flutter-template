@@ -1,8 +1,7 @@
-import 'package:dio/dio.dart';
 import 'dart:developer' as developer;
-
-import 'api.dart';
-import 'token.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_template/data/auth/oauth2/api.dart';
+import 'package:flutter_template/data/auth/oauth2/token.dart';
 
 const _authHeader = 'Authorization';
 
@@ -16,8 +15,7 @@ class OAuth2Interceptor extends Interceptor {
   OAuth2Interceptor(this._dio, this._tokenStorage, this._tokenRefresher);
 
   @override
-  void onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     final header = options.headers[_authHeader];
 
     if (header != null) {
@@ -44,15 +42,14 @@ class OAuth2Interceptor extends Interceptor {
       }
     }
 
-    options.headers[_authHeader] = 'Bearer ${token.accessToken}';
+    options.headers[_authHeader] = 'Bearer ${token?.accessToken}';
 
     return handler.next(options);
   }
 
   @override
   void onError(DioError error, ErrorInterceptorHandler handler) async {
-    if (error.type != DioErrorType.response ||
-        error.response.statusCode != 401) {
+    if (error.type != DioErrorType.response || error.response?.statusCode != 401) {
       return handler.next(error);
     }
 
@@ -78,8 +75,7 @@ class OAuth2Interceptor extends Interceptor {
     if (sentToken != storedToken.accessToken) {
       // Sent token is not the same as stored one
       // Retry with stored one
-      return await _retryWithToken(
-          error.requestOptions, storedToken.accessToken, handler);
+      return _retryWithToken(error.requestOptions, storedToken.accessToken, handler);
     }
 
     if (!storedToken.isExpired()) {
@@ -99,16 +95,12 @@ class OAuth2Interceptor extends Interceptor {
     }
     _dio.unlock();
     // retry with new token
-    return _retryWithToken(error.requestOptions, newToken.accessToken, handler);
+    return _retryWithToken(error.requestOptions, newToken!.accessToken, handler);
   }
 
-  void _retryWithToken(RequestOptions originalRequest, String token,
-      ErrorInterceptorHandler handler) async {
+  void _retryWithToken(RequestOptions originalRequest, String token, ErrorInterceptorHandler handler) async {
     originalRequest.headers[_authHeader] = 'Bearer $token';
-    return _dio
-        .fetch(originalRequest)
-        .then((r) => handler.resolve(r))
-        .catchError((error, stackTrace) => handler.reject(error));
+    return _dio.fetch(originalRequest).then((r) => handler.resolve(r)).catchError((error, stackTrace) => handler.reject(error as DioError));
   }
 }
 
@@ -122,13 +114,7 @@ class OAuth2TokenRefresher {
   Future<OAuth2Token> refreshToken() async {
     final oldToken = _tokenStorage.getToken();
     if (oldToken != null && oldToken.isExpired()) {
-      final newToken = await _api.refreshToken(
-          _requestFactory.makeRefreshRequest(oldToken.refreshToken));
-
-      if (newToken == null) {
-        throw AssertionError(
-            'Response body should not be null if call was successful');
-      }
+      final newToken = await _api.refreshToken(_requestFactory.makeRefreshRequest(oldToken.refreshToken));
 
       _tokenStorage.saveToken(newToken);
       return newToken;

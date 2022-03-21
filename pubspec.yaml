@@ -3,7 +3,7 @@ description: Klika Flutter hybrid app template
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -18,12 +18,11 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.16.1 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -31,7 +30,7 @@ dependencies:
 
   # State management
   # Other options: https://flutter.dev/docs/development/data-and-backend/state-mgmt/options
-  provider: ^5.0.0
+  provider: ^6.0.2
 
   # Http client
   dio: ^4.0.0
@@ -50,14 +49,18 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # Linter
-  pedantic: ^1.11.1
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^1.0.0
 
   # Required for code generation for json serialization and Hive DB
   build_runner: ^2.0.5
 
   # Json serialization
-  json_serializable: ^4.1.3
+  json_serializable: ^6.1.5
 
   # Mocking library
   mockito: ^5.0.10
@@ -68,13 +71,11 @@ dev_dependencies:
   # Hive DB code generation
   hive_generator:
 
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

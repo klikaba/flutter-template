@@ -47,12 +47,10 @@ class CountryAdapter extends TypeAdapter<Country> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-Country _$CountryFromJson(Map<String, dynamic> json) {
-  return Country(
-    json['code'] as String,
-    json['name'] as String,
-  );
-}
+Country _$CountryFromJson(Map<String, dynamic> json) => Country(
+      json['code'] as String,
+      json['name'] as String,
+    );
 
 Map<String, dynamic> _$CountryToJson(Country instance) => <String, dynamic>{
       'code': instance.code,

@@ -1,24 +1,22 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_template/data/base/json.dart';
+import 'package:flutter_template/data/user/model.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../base/json.dart';
-import 'model.dart';
-
 part 'api.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 class RegistrationInfo extends JsonEncodable {
   final String email;
   final String password;
 
-  RegistrationInfo({this.email, this.password});
+  RegistrationInfo({required this.email, required this.password});
 
   @override
   Map<String, dynamic> toJson() => _$RegistrationInfoToJson(this);
 
-  factory RegistrationInfo.fromJson(Map<String, dynamic> json) =>
-      _$RegistrationInfoFromJson(json);
+  factory RegistrationInfo.fromJson(Map<String, dynamic> json) => _$RegistrationInfoFromJson(json);
 }
 
 class UserApi {
@@ -27,14 +25,13 @@ class UserApi {
   UserApi(this._client);
 
   Future<User> create(RegistrationInfo request) async {
-    final response =
-        await _client.post('api/v1/users', data: {'user': request.toJson()});
-    return User.fromJson(response.data);
+    final response = await _client.post('api/v1/users', data: {'user': request.toJson()});
+    return User.fromJson(response.data as Map<String, dynamic>);
   }
 
   Future<User> get(int id) async {
     final response = await _client.get('api/v1/users/$id');
-    return User.fromJson(response.data);
+    return User.fromJson(response.data as Map<String, dynamic>);
   }
 }
 
@@ -58,7 +55,6 @@ class UserRepository {
     }
 
     // Combine cached data with fresh API data
-    return Stream.fromFutures(
-        [Future.value(_usersBox.get('${id}')), loadUser()]);
+    return Stream.fromFutures([Future.value(_usersBox.get('$id')), loadUser()]);
   }
 }
